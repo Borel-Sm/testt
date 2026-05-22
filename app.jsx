@@ -11,7 +11,7 @@ const formatDate = (iso) => {
 
 const now = () => new Date().toISOString();
 
-const CATEGORIES = ["Folha Curada", "Mistura", "Cigarro", "Charuto", "Fumo de Rolo", "Outro"];
+const CATEGORIES = ["Prensado", "Mistura", "Cigarro", "Charuto", "Fumo de Rolo", "Outro"];
 
 const INITIAL_PRODUCTS = [
   { id: 1, name: "Folha Curada Premium", category: "Folha Curada", quantity: 50, costValue: 8.0, saleValue: 12.5, dateAdded: "2026-05-10T08:00:00" },
