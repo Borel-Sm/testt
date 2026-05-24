@@ -1,0 +1,633 @@
+'HTMLEOF'
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tabacaria — Gestão</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Crimson+Pro:wght@300;400;600&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #110d06; --surface: #1e1509; --card: #271b0c; --card-hover: #2f2010;
+      --border: #3d2c14; --accent: #c8852a; --accent-light: #e8a84a;
+      --accent-dim: rgba(200,133,42,0.15); --text: #f0e6d3; --text-muted: #9e8a6e;
+      --text-dim: #6a5840; --green: #7aad5e; --green-dim: rgba(122,173,94,0.15);
+      --red: #c06050; --red-dim: rgba(192,96,80,0.15);
+      --blue: #6a9fc0; --blue-dim: rgba(106,159,192,0.15);
+    }
+    body { font-family: 'Crimson Pro', Georgia, serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    .topbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 20px 0; position: sticky; top: 0; z-index: 10; }
+    .topbar-brand { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .brand-title { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; color: var(--accent-light); }
+    .brand-sub { font-size: 10px; color: var(--text-dim); letter-spacing: 0.08em; text-transform: uppercase; }
+    .nav { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; }
+    .nav::-webkit-scrollbar { display: none; }
+    .nav-item { display: flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 8px 8px 0 0; cursor: pointer; font-size: 14px; color: var(--text-muted); transition: all 0.18s; border: 1px solid transparent; border-bottom: none; font-family: 'Crimson Pro', serif; background: none; white-space: nowrap; }
+    .nav-item:hover { background: var(--accent-dim); color: var(--text); }
+    .nav-item.active { background: var(--bg); color: var(--accent-light); border-color: var(--border); border-bottom-color: var(--bg); }
+    .main { padding: 24px 16px; max-width: 960px; width: 100%; margin: 0 auto; }
+    .page { display: none; }
+    .page.active { display: block; }
+    .page-header { margin-bottom: 22px; }
+    .page-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--text); }
+    .page-subtitle { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 16px; margin-bottom: 16px; }
+    .card-title { font-family: 'Playfair Display', serif; font-size: 12px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; }
+    .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
+    .stat-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+    .stat-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
+    .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; position: relative; overflow: hidden; }
+    .stat-card::before { content:''; position:absolute; top:0;left:0;right:0; height:2px; }
+    .stat-card.accent::before { background: linear-gradient(90deg, var(--accent), transparent); }
+    .stat-card.green::before { background: linear-gradient(90deg, var(--green), transparent); }
+    .stat-card.red::before { background: linear-gradient(90deg, var(--red), transparent); }
+    .stat-card.blue::before { background: linear-gradient(90deg, var(--blue), transparent); }
+    .stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); margin-bottom: 6px; }
+    .stat-value { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; }
+    .stat-sub { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+    .stat-icon { position: absolute; top: 12px; right: 12px; font-size: 18px; opacity: 0.2; }
+    .table-wrap { overflow-x: auto; margin-top: 8px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    thead th { text-align: left; padding: 8px 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-dim); border-bottom: 1px solid var(--border); font-family: 'Crimson Pro', serif; font-weight: 600; white-space: nowrap; }
+    tbody tr { border-bottom: 1px solid rgba(61,44,20,0.5); transition: background 0.15s; }
+    tbody tr:hover { background: var(--card-hover); }
+    tbody td { padding: 10px; color: var(--text); vertical-align: middle; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+    .badge-green { background: var(--green-dim); color: var(--green); }
+    .badge-amber { background: var(--accent-dim); color: var(--accent-light); }
+    .badge-red { background: var(--red-dim); color: var(--red); }
+    .badge-blue { background: var(--blue-dim); color: var(--blue); }
+    .cat-flor { background: rgba(122,173,94,0.2); color: var(--green); border-radius: 4px; padding: 2px 8px; font-size: 11px; font-weight: 600; }
+    .cat-nflor { background: var(--blue-dim); color: var(--blue); border-radius: 4px; padding: 2px 8px; font-size: 11px; font-weight: 600; }
+    .form-stack { display: flex; flex-direction: column; gap: 12px; }
+    .field { display: flex; flex-direction: column; gap: 5px; }
+    label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+    input, select { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; font-size: 15px; color: var(--text); font-family: 'Crimson Pro', serif; outline: none; transition: border 0.18s; width: 100%; }
+    input:focus, select:focus { border-color: var(--accent); }
+    select option { background: #1e1509; }
+    .field-cost input:focus { border-color: var(--red); }
+    .field-cost label { color: var(--red); opacity: 0.85; }
+    .field-sale input:focus { border-color: var(--green); }
+    .field-sale label { color: var(--green); opacity: 0.85; }
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    .price-divider { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
+    .price-divider-line { flex: 1; height: 1px; background: var(--border); }
+    .price-divider-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; }
+    .btn { padding: 11px 20px; border-radius: 8px; border: none; cursor: pointer; font-family: 'Crimson Pro', serif; font-size: 15px; font-weight: 600; transition: all 0.18s; display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%; }
+    .btn-primary { background: linear-gradient(135deg, var(--accent), #a06820); color: #fff; }
+    .btn-primary:hover { filter: brightness(1.15); }
+    .btn-danger { background: var(--red-dim); color: var(--red); border: 1px solid var(--red-dim); padding: 6px 10px; font-size: 12px; width: auto; }
+    .btn-danger:hover { background: rgba(192,96,80,0.3); }
+    .section-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
+    .empty-state { text-align: center; padding: 32px; color: var(--text-dim); font-size: 14px; }
+    .empty-icon { font-size: 30px; margin-bottom: 8px; opacity: 0.5; }
+    .alert { padding: 10px 14px; border-radius: 8px; font-size: 14px; margin-bottom: 12px; }
+    .alert-success { background: var(--green-dim); color: var(--green); border: 1px solid rgba(122,173,94,0.25); }
+    .alert-error { background: var(--red-dim); color: var(--red); border: 1px solid rgba(192,96,80,0.25); }
+    .preview-box { font-size: 13px; color: var(--text-muted); padding: 12px 14px; background: var(--surface); border-radius: 8px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 5px; }
+    .prow { display: flex; justify-content: space-between; align-items: center; }
+    .prow.total { border-top: 1px solid var(--border); margin-top: 4px; padding-top: 6px; font-weight: 600; font-size: 14px; }
+    .hidden { display: none !important; }
+    .gram-tag { font-size: 11px; color: var(--text-dim); margin-left: 3px; }
+    /* progress bar */
+    .prog-wrap { background: rgba(61,44,20,0.4); border-radius: 4px; height: 6px; overflow: hidden; margin-top: 6px; }
+    .prog-bar { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--green), #5d9448); transition: width 0.4s ease; }
+    /* chart */
+    .chart-area { display: flex; align-items: flex-end; gap: 8px; height: 100px; margin-top: 10px; }
+    .chart-col { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; }
+    .chart-col-bars { display: flex; gap: 3px; align-items: flex-end; height: 80px; }
+    .chart-bar { width: 14px; border-radius: 3px 3px 0 0; cursor: default; position: relative; transition: opacity 0.2s; }
+    .chart-bar:hover::after { content: attr(data-val); position: absolute; bottom: calc(100% + 4px); left: 50%; transform: translateX(-50%); background: var(--card); border: 1px solid var(--border); border-radius: 4px; padding: 2px 6px; font-size: 10px; white-space: nowrap; color: var(--text); pointer-events: none; z-index: 5; }
+    .chart-lbl { font-size: 10px; color: var(--text-muted); }
+    .legend { display: flex; gap: 14px; margin-top: 8px; font-size: 11px; color: var(--text-muted); }
+    .legend-dot { width: 10px; height: 10px; border-radius: 2px; display: inline-block; margin-right: 4px; }
+    /* stock bar inline */
+    .stock-info { display: flex; align-items: center; gap: 8px; }
+    .stock-num { font-weight: 600; min-width: 55px; font-size: 13px; }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-brand">
+    <span style="font-size:22px">🍁</span>
+    <div>
+      <div class="brand-title">Gestão SM</div>
+      <div class="brand-sub">Controle de Produção</div>
+    </div>
+  </div>
+  <nav class="nav">
+    <button class="nav-item active" onclick="showTab('dashboard',this)">◈ Painel</button>
+    <button class="nav-item" onclick="showTab('estoque',this)">⊟ Estoque</button>
+    <button class="nav-item" onclick="showTab('vendas',this)">⊕ Vendas</button>
+    <button class="nav-item" onclick="showTab('relatorios',this)">◎ Relatórios</button>
+  </nav>
+</div>
+
+<main class="main">
+
+  <!-- PAINEL -->
+  <div id="page-dashboard" class="page active">
+    <div class="page-header">
+      <div class="page-title">Painel Geral</div>
+      <div class="page-subtitle">Visão consolidada do seu negócio</div>
+    </div>
+    <div class="stat-grid-4">
+      <div class="stat-card accent"><div class="stat-icon">⚖️</div><div class="stat-label">Estoque Total</div><div class="stat-value" style="color:var(--accent-light)" id="d-stock-g">—</div><div class="stat-sub" id="d-stock-val">—</div></div>
+      <div class="stat-card green"><div class="stat-icon">💰</div><div class="stat-label">Receita Total</div><div class="stat-value" style="color:var(--green)" id="d-revenue">—</div><div class="stat-sub" id="d-sales-count">—</div></div>
+      <div class="stat-card blue"><div class="stat-icon">📊</div><div class="stat-label">Lucro Realizado</div><div class="stat-value" style="color:var(--blue)" id="d-profit">—</div><div class="stat-sub" id="d-margin">—</div></div>
+      <div class="stat-card accent"><div class="stat-icon">🍁</div><div class="stat-label">Produtos</div><div class="stat-value" style="color:var(--accent-light)" id="d-prods">—</div><div class="stat-sub" id="d-prods-sub">—</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Receita vs Lucro por Dia (R$)</div>
+      <div id="d-chart"><div class="empty-state">Sem dados de vendas</div></div>
+      <div class="legend">
+        <span><span class="legend-dot" style="background:#c8852a;opacity:0.7"></span>Receita</span>
+        <span><span class="legend-dot" style="background:#7aad5e"></span>Lucro</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Últimas Vendas</div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Produto</th><th>Categoria</th><th>Gramas</th><th>Receita</th><th>Lucro</th></tr></thead>
+        <tbody id="d-last-sales"></tbody>
+      </table></div>
+    </div>
+    <div class="card">
+      <div class="card-title">⚠ Estoque Baixo (≤ 10g)</div>
+      <div id="d-low-stock"></div>
+    </div>
+  </div>
+
+  <!-- ESTOQUE -->
+  <div id="page-estoque" class="page">
+    <div class="page-header">
+      <div class="page-title">Controle de Estoque</div>
+      <div class="page-subtitle">Cadastre produtos e gerencie gramas em estoque</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Cadastrar Produto</div>
+      <hr class="divider" />
+      <div id="p-alert"></div>
+      <div class="form-stack">
+        <div class="row-2">
+          <div class="field">
+            <label>Nome do Produto / Strain</label>
+            <input id="p-name" placeholder="Ex: White Widow" oninput="updatePPreview()" />
+          </div>
+          <div class="field">
+            <label>Categoria</label>
+            <select id="p-cat">
+              <option value="Flor">🥦 Flor</option>
+              <option value="N/FLOR">📦 N/FLOR</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Quantidade em Estoque (gramas)</label>
+          <input type="number" id="p-qty" min="0" step="0.1" placeholder="Ex: 100" oninput="updatePPreview()" />
+        </div>
+
+        <div class="price-divider">
+          <div class="price-divider-line"></div>
+          <div class="price-divider-label">Valores por grama</div>
+          <div class="price-divider-line"></div>
+        </div>
+
+        <div class="row-2">
+          <div class="field field-cost">
+            <label>💸 Custo por Grama (R$)</label>
+            <input type="number" id="p-cost" min="0" step="0.01" placeholder="0,00" oninput="updatePPreview()" />
+          </div>
+          <div class="field field-sale">
+            <label>🏷 Preço de Venda por Grama (R$)</label>
+            <input type="number" id="p-sale" min="0" step="0.01" placeholder="0,00" oninput="updatePPreview()" />
+          </div>
+        </div>
+
+        <div id="p-preview" class="preview-box hidden"></div>
+        <button class="btn btn-primary" onclick="addProduct()">+ Adicionar ao Estoque</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-actions">
+        <div class="card-title" style="margin-bottom:0">Produtos em Estoque</div>
+        <div style="font-size:13px;color:var(--text-muted)">Capital investido: <strong style="color:var(--accent-light)" id="e-cost-total">—</strong></div>
+      </div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Produto</th><th>Cat.</th><th>Estoque</th><th>Custo/g</th><th>Venda/g</th><th>Margem</th><th>Val. Estoque</th><th></th></tr></thead>
+        <tbody id="e-list"></tbody>
+      </table></div>
+    </div>
+  </div>
+
+  <!-- VENDAS -->
+  <div id="page-vendas" class="page">
+    <div class="page-header">
+      <div class="page-title">Registrar Venda</div>
+      <div class="page-subtitle">Informe o produto e as gramas vendidas</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Nova Venda</div>
+      <hr class="divider" />
+      <div id="s-alert"></div>
+      <div class="form-stack">
+        <div class="field">
+          <label>Produto</label>
+          <select id="s-product" onchange="updateSPreview()">
+            <option value="">Selecione um produto...</option>
+          </select>
+        </div>
+        <div class="row-2">
+          <div class="field">
+            <label>Gramas Vendidas</label>
+            <input type="number" id="s-qty" min="0.1" step="0.1" placeholder="Ex: 3.5" oninput="updateSPreview()" />
+          </div>
+          <div class="field">
+            <label>Comprador</label>
+            <input id="s-buyer" placeholder="Nome do cliente" />
+          </div>
+        </div>
+        <div id="s-preview" class="preview-box hidden"></div>
+        <button class="btn btn-primary" onclick="addSale()">⊕ Registrar Venda</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-actions">
+        <div class="card-title" style="margin-bottom:0">Histórico de Vendas</div>
+        <div style="font-size:13px;color:var(--text-muted)">Lucro total: <strong style="color:var(--green)" id="v-profit-total">—</strong></div>
+      </div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Produto</th><th>Cat.</th><th>Gramas</th><th>R$/g</th><th>Receita</th><th>Lucro</th><th>Data</th><th></th></tr></thead>
+        <tbody id="v-list"></tbody>
+      </table></div>
+    </div>
+  </div>
+
+  <!-- RELATÓRIOS -->
+  <div id="page-relatorios" class="page">
+    <div class="page-header">
+      <div class="page-title">Relatórios</div>
+      <div class="page-subtitle">Análise financeira completa</div>
+    </div>
+    <div class="stat-grid-3">
+      <div class="stat-card red"><div class="stat-icon">📤</div><div class="stat-label">Custo das Vendas</div><div class="stat-value" style="color:var(--red)" id="r-cost">—</div><div class="stat-sub">Capital investido</div></div>
+      <div class="stat-card green"><div class="stat-icon">📥</div><div class="stat-label">Receita Total</div><div class="stat-value" style="color:var(--green)" id="r-revenue">—</div><div class="stat-sub">Total recebido</div></div>
+      <div class="stat-card blue"><div class="stat-icon">✨</div><div class="stat-label">Lucro Líquido</div><div class="stat-value" style="color:var(--blue)" id="r-profit">—</div><div class="stat-sub" id="r-margin-sub">—</div></div>
+    </div>
+    <div class="card" id="r-margin-card" style="display:none">
+      <div class="card-title">Margem de Lucro Geral</div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text-muted);margin-bottom:6px">
+        <span>0%</span><strong style="color:var(--green)" id="r-margin-pct">—</strong><span>100%</span>
+      </div>
+      <div class="prog-wrap"><div class="prog-bar" id="r-margin-bar" style="width:0%"></div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Receita vs Lucro por Dia (R$)</div>
+      <div id="r-chart"><div class="empty-state">Sem dados</div></div>
+      <div class="legend">
+        <span><span class="legend-dot" style="background:#c8852a;opacity:0.7"></span>Receita</span>
+        <span><span class="legend-dot" style="background:#7aad5e"></span>Lucro</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Desempenho por Produto</div>
+      <div id="r-by-product"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Potencial do Estoque Atual</div>
+      <div class="table-wrap" style="margin-top:8px"><table>
+        <thead><tr><th>Produto</th><th>Cat.</th><th>Gramas</th><th>Custo Total</th><th>Receita Pot.</th><th>Lucro Pot.</th></tr></thead>
+        <tbody id="r-potential"></tbody>
+      </table></div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  // ── Estado ───────────────────────────────────────────────────────────────
+  let products = [
+    { id:1, name:"White Widow", category:"Flor", grams:100, costPerG:15, salePerG:30, dateAdded:"2026-05-10T08:00:00" },
+    { id:2, name:"Hash Marroquino", category:"N/FLOR", grams:50, costPerG:20, salePerG:40, dateAdded:"2026-05-12T10:00:00" },
+    { id:3, name:"Purple Haze", category:"Flor", grams:80, costPerG:18, salePerG:35, dateAdded:"2026-05-14T09:00:00" },
+  ];
+
+  let sales = [
+    { id:1, productId:1, productName:"White Widow", category:"Flor", grams:7, costPerG:15, salePerG:30, revenue:210, cost:105, date:"2026-05-18T10:00:00", buyer:"João S." },
+    { id:2, productId:2, productName:"Hash Marroquino", category:"N/FLOR", grams:3.5, costPerG:20, salePerG:40, revenue:140, cost:70, date:"2026-05-20T14:30:00", buyer:"Maria L." },
+    { id:3, productId:3, productName:"Purple Haze", category:"Flor", grams:5, costPerG:18, salePerG:35, revenue:175, cost:90, date:"2026-05-22T11:00:00", buyer:"Pedro A." },
+  ];
+
+  let nextPId = 4, nextSId = 4;
+
+  // ── Helpers ───────────────────────────────────────────────────────────────
+  const R = v => new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(v||0);
+  const G = v => parseFloat(v).toFixed(1).replace('.',',') + 'g';
+  const fmtDate = iso => { const d = new Date(iso); return d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}); };
+  const catBadge = c => c === 'Flor' ? '<span class="cat-flor">🌿 Flor</span>' : '<span class="cat-nflor">📦 N/FLOR</span>';
+
+  function showAlert(id, type, msg) {
+    document.getElementById(id).innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
+    if (type==='success') setTimeout(()=>document.getElementById(id).innerHTML='', 3000);
+  }
+
+  function showTab(tab, btn) {
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+    document.getElementById('page-'+tab).classList.add('active');
+    btn.classList.add('active');
+    renderAll();
+  }
+
+  // ── Gráfico ───────────────────────────────────────────────────────────────
+  function buildChart(containerId) {
+    const map = {};
+    sales.forEach(s => {
+      const day = new Date(s.date).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});
+      if (!map[day]) map[day] = { receita:0, lucro:0 };
+      map[day].receita += s.revenue;
+      map[day].lucro += (s.revenue - s.cost);
+    });
+    const data = Object.entries(map);
+    const el = document.getElementById(containerId);
+    if (!data.length) { el.innerHTML = '<div class="empty-state">Sem dados de vendas</div>'; return; }
+    const maxVal = Math.max(...data.map(([,v])=>v.receita));
+    el.innerHTML = '<div class="chart-area">' + data.map(([dia, v]) => {
+      const rH = maxVal > 0 ? Math.round((v.receita/maxVal)*76) : 0;
+      const lH = maxVal > 0 ? Math.round((v.lucro/maxVal)*76) : 0;
+      return `<div class="chart-col">
+        <div class="chart-col-bars">
+          <div class="chart-bar" style="height:${rH}px;background:#c8852a;opacity:0.7" data-val="${R(v.receita)}"></div>
+          <div class="chart-bar" style="height:${lH}px;background:#7aad5e" data-val="${R(v.lucro)}"></div>
+        </div>
+        <div class="chart-lbl">${dia}</div>
+      </div>`;
+    }).join('') + '</div>';
+  }
+
+  // ── Painel ────────────────────────────────────────────────────────────────
+  function renderDashboard() {
+    const totalG = products.reduce((a,p)=>a+p.grams,0);
+    const stockVal = products.reduce((a,p)=>a+(p.grams*p.costPerG),0);
+    const revenue = sales.reduce((a,s)=>a+s.revenue,0);
+    const cost = sales.reduce((a,s)=>a+s.cost,0);
+    const profit = revenue - cost;
+    const margin = revenue > 0 ? ((profit/revenue)*100).toFixed(1) : 0;
+    const flores = products.filter(p=>p.category==='Flor').length;
+    const nflores = products.filter(p=>p.category==='N/FLOR').length;
+
+    document.getElementById('d-stock-g').textContent = G(totalG);
+    document.getElementById('d-stock-val').textContent = 'Custo: ' + R(stockVal);
+    document.getElementById('d-revenue').textContent = R(revenue);
+    document.getElementById('d-sales-count').textContent = sales.length + ' vendas';
+    document.getElementById('d-profit').textContent = R(profit);
+    document.getElementById('d-margin').textContent = 'Margem: ' + margin + '%';
+    document.getElementById('d-prods').textContent = products.length;
+    document.getElementById('d-prods-sub').textContent = flores + ' Flor · ' + nflores + ' N/FLOR';
+
+    buildChart('d-chart');
+
+    const last5 = sales.slice(0,5);
+    document.getElementById('d-last-sales').innerHTML = last5.length ? last5.map(s=>`<tr>
+      <td><strong>${s.productName}</strong></td>
+      <td>${catBadge(s.category)}</td>
+      <td>${G(s.grams)}</td>
+      <td><span class="badge badge-amber">${R(s.revenue)}</span></td>
+      <td><span class="badge badge-green">${R(s.revenue-s.cost)}</span></td>
+    </tr>`).join('') : '<tr><td colspan="5" class="empty-state">Sem vendas</td></tr>';
+
+    const low = products.filter(p=>p.grams<=10);
+    document.getElementById('d-low-stock').innerHTML = low.length
+      ? `<div class="table-wrap"><table><thead><tr><th>Produto</th><th>Cat.</th><th>Estoque</th></tr></thead><tbody>
+          ${low.map(p=>`<tr><td>${p.name}</td><td>${catBadge(p.category)}</td><td><span class="badge badge-red">${G(p.grams)}</span></td></tr>`).join('')}
+        </tbody></table></div>`
+      : '<div style="color:var(--green);font-size:14px;padding:6px 0">✓ Todos os produtos com estoque adequado.</div>';
+  }
+
+  // ── Estoque ───────────────────────────────────────────────────────────────
+  function renderEstoque() {
+    const totalCost = products.reduce((a,p)=>a+(p.grams*p.costPerG),0);
+    document.getElementById('e-cost-total').textContent = R(totalCost);
+    const tbody = document.getElementById('e-list');
+    if (!products.length) { tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">📦</div>Nenhum produto cadastrado.</div></td></tr>'; return; }
+    tbody.innerHTML = products.map(p=>{
+      const margin = p.salePerG > 0 ? (((p.salePerG-p.costPerG)/p.salePerG)*100).toFixed(0) : 0;
+      const qBadge = p.grams <= 10 ? 'badge-red' : p.grams <= 30 ? 'badge-amber' : 'badge-green';
+      const stockVal = p.grams * p.costPerG;
+      return `<tr>
+        <td><strong style="font-size:13px">${p.name}</strong></td>
+        <td>${catBadge(p.category)}</td>
+        <td><span class="badge ${qBadge}">${G(p.grams)}</span></td>
+        <td style="color:var(--red);font-size:12px">${R(p.costPerG)}<span class="gram-tag">/g</span></td>
+        <td style="color:var(--green);font-size:12px">${R(p.salePerG)}<span class="gram-tag">/g</span></td>
+        <td><span class="badge badge-blue">${margin}%</span></td>
+        <td style="font-size:12px;color:var(--accent-light)">${R(stockVal)}</td>
+        <td><button class="btn btn-danger" onclick="removeProduct(${p.id})">✕</button></td>
+      </tr>`;
+    }).join('');
+  }
+
+  // ── Vendas ────────────────────────────────────────────────────────────────
+  function renderVendas() {
+    const sel = document.getElementById('s-product');
+    const cur = sel.value;
+    sel.innerHTML = '<option value="">Selecione um produto...</option>' +
+      products.map(p=>`<option value="${p.id}">${p.name} (${p.category}) — R$ ${p.salePerG.toFixed(2)}/g | estoque: ${G(p.grams)}</option>`).join('');
+    sel.value = cur;
+
+    const totalProfit = sales.reduce((a,s)=>a+(s.revenue-s.cost),0);
+    document.getElementById('v-profit-total').textContent = R(totalProfit);
+
+    const tbody = document.getElementById('v-list');
+    if (!sales.length) { tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">🧾</div>Nenhuma venda registrada.</div></td></tr>'; return; }
+    tbody.innerHTML = sales.map(s=>`<tr>
+      <td>
+        <strong style="font-size:13px">${s.productName}</strong>
+        ${s.buyer && s.buyer !== '—' ? `<div style="font-size:11px;color:var(--text-muted)">${s.buyer}</div>` : ''}
+      </td>
+      <td>${catBadge(s.category)}</td>
+      <td><span class="badge badge-amber">${G(s.grams)}</span></td>
+      <td style="font-size:12px;color:var(--green)">${R(s.salePerG)}<span class="gram-tag">/g</span></td>
+      <td><span class="badge badge-amber">${R(s.revenue)}</span></td>
+      <td><span class="badge badge-green">${R(s.revenue-s.cost)}</span></td>
+      <td style="font-size:11px;color:var(--text-muted);white-space:nowrap">${fmtDate(s.date)}</td>
+      <td><button class="btn btn-danger" onclick="removeSale(${s.id})">✕</button></td>
+    </tr>`).join('');
+  }
+
+  // ── Relatórios ────────────────────────────────────────────────────────────
+  function renderRelatorios() {
+    const revenue = sales.reduce((a,s)=>a+s.revenue,0);
+    const cost = sales.reduce((a,s)=>a+s.cost,0);
+    const profit = revenue - cost;
+    const margin = revenue > 0 ? (profit/revenue)*100 : 0;
+
+    document.getElementById('r-cost').textContent = R(cost);
+    document.getElementById('r-revenue').textContent = R(revenue);
+    document.getElementById('r-profit').textContent = R(profit);
+    document.getElementById('r-margin-sub').textContent = 'Margem: ' + margin.toFixed(1) + '%';
+
+    if (revenue > 0) {
+      document.getElementById('r-margin-card').style.display = '';
+      document.getElementById('r-margin-pct').textContent = margin.toFixed(1) + '%';
+      document.getElementById('r-margin-bar').style.width = Math.min(margin,100) + '%';
+    } else {
+      document.getElementById('r-margin-card').style.display = 'none';
+    }
+
+    buildChart('r-chart');
+
+    // Por produto
+    const map = {};
+    sales.forEach(s=>{
+      if (!map[s.productName]) map[s.productName] = { cat:s.category, grams:0, revenue:0, cost:0 };
+      map[s.productName].grams += s.grams;
+      map[s.productName].revenue += s.revenue;
+      map[s.productName].cost += s.cost;
+    });
+    const sorted = Object.entries(map).sort((a,b)=>(b[1].revenue-b[1].cost)-(a[1].revenue-a[1].cost));
+    const byPEl = document.getElementById('r-by-product');
+    if (!sorted.length) { byPEl.innerHTML = '<div class="empty-state">Sem dados</div>'; }
+    else {
+      byPEl.innerHTML = '<div style="margin-top:6px">' + sorted.map(([name,d],i)=>{
+        const p2 = d.revenue - d.cost;
+        const m2 = d.revenue > 0 ? ((p2/d.revenue)*100).toFixed(0) : 0;
+        return `<div style="padding:10px 0;border-bottom:${i<sorted.length-1?'1px solid var(--border)':'none'}">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+            <div>
+              <div style="font-weight:600;font-size:14px">${name} ${catBadge(d.cat)}</div>
+              <div style="font-size:11px;color:var(--text-muted)">${G(d.grams)} vendidas · Receita: ${R(d.revenue)} · Custo: ${R(d.cost)}</div>
+            </div>
+            <div style="text-align:right">
+              <div><span class="badge badge-green">${R(p2)}</span></div>
+              <div style="font-size:11px;color:var(--blue);margin-top:3px">${m2}% margem</div>
+            </div>
+          </div>
+          <div class="prog-wrap"><div class="prog-bar" style="width:${Math.min(m2,100)}%"></div></div>
+        </div>`;
+      }).join('') + '</div>';
+    }
+
+    // Potencial
+    document.getElementById('r-potential').innerHTML = products.map(p=>{
+      const costTot = p.grams * p.costPerG;
+      const revPot = p.grams * p.salePerG;
+      const lucPot = revPot - costTot;
+      return `<tr>
+        <td><strong>${p.name}</strong></td>
+        <td>${catBadge(p.category)}</td>
+        <td>${G(p.grams)}</td>
+        <td style="color:var(--red);font-size:12px">${R(costTot)}</td>
+        <td style="color:var(--accent-light);font-size:12px">${R(revPot)}</td>
+        <td><span class="badge badge-green">${R(lucPot)}</span></td>
+      </tr>`;
+    }).join('') || '<tr><td colspan="6" class="empty-state">Sem produtos</td></tr>';
+  }
+
+  function renderAll() {
+    renderDashboard(); renderEstoque(); renderVendas(); renderRelatorios();
+  }
+
+  // ── Ações ─────────────────────────────────────────────────────────────────
+  function addProduct() {
+    const name = document.getElementById('p-name').value.trim();
+    const category = document.getElementById('p-cat').value;
+    const grams = parseFloat(document.getElementById('p-qty').value);
+    const cost = parseFloat(document.getElementById('p-cost').value);
+    const sale = parseFloat(document.getElementById('p-sale').value);
+    if (!name) { showAlert('p-alert','error','Informe o nome do produto.'); return; }
+    if (isNaN(grams)||grams<=0) { showAlert('p-alert','error','Informe a quantidade em gramas.'); return; }
+    if (isNaN(cost)||cost<=0) { showAlert('p-alert','error','Informe o custo por grama.'); return; }
+    if (isNaN(sale)||sale<=0) { showAlert('p-alert','error','Informe o preço de venda por grama.'); return; }
+    if (sale < cost) { showAlert('p-alert','error','Atenção: preço de venda menor que o custo!'); return; }
+    products.push({ id:nextPId++, name, category, grams, costPerG:cost, salePerG:sale, dateAdded:new Date().toISOString() });
+    document.getElementById('p-name').value='';
+    document.getElementById('p-qty').value='';
+    document.getElementById('p-cost').value='';
+    document.getElementById('p-sale').value='';
+    document.getElementById('p-preview').classList.add('hidden');
+    showAlert('p-alert','success',`${name} adicionado ao estoque!`);
+    renderAll();
+  }
+
+  function removeProduct(id) {
+    if (!confirm('Remover este produto?')) return;
+    products = products.filter(p=>p.id!==id);
+    renderAll();
+  }
+
+  function addSale() {
+    const productId = parseInt(document.getElementById('s-product').value);
+    const grams = parseFloat(document.getElementById('s-qty').value);
+    const buyer = document.getElementById('s-buyer').value.trim() || '—';
+    if (!productId) { showAlert('s-alert','error','Selecione o produto.'); return; }
+    const product = products.find(p=>p.id===productId);
+    if (!product) return;
+    if (isNaN(grams)||grams<=0) { showAlert('s-alert','error','Informe a quantidade em gramas.'); return; }
+    if (grams > product.grams) { showAlert('s-alert','error',`Estoque insuficiente. Disponível: ${G(product.grams)}`); return; }
+    const revenue = parseFloat((grams * product.salePerG).toFixed(2));
+    const cost = parseFloat((grams * product.costPerG).toFixed(2));
+    sales.unshift({ id:nextSId++, productId:product.id, productName:product.name, category:product.category, grams, costPerG:product.costPerG, salePerG:product.salePerG, revenue, cost, date:new Date().toISOString(), buyer });
+    product.grams = parseFloat((product.grams - grams).toFixed(2));
+    document.getElementById('s-product').value='';
+    document.getElementById('s-qty').value='';
+    document.getElementById('s-buyer').value='';
+    document.getElementById('s-preview').classList.add('hidden');
+    showAlert('s-alert','success',`Venda registrada! Lucro: ${R(revenue-cost)}`);
+    renderAll();
+  }
+
+  function removeSale(id) {
+    if (!confirm('Remover esta venda?')) return;
+    sales = sales.filter(s=>s.id!==id);
+    renderAll();
+  }
+
+  // ── Previews ──────────────────────────────────────────────────────────────
+  function updatePPreview() {
+    const grams = parseFloat(document.getElementById('p-qty').value);
+    const cost = parseFloat(document.getElementById('p-cost').value);
+    const sale = parseFloat(document.getElementById('p-sale').value);
+    const el = document.getElementById('p-preview');
+    if (grams>0 && cost>0 && sale>0) {
+      const lucro = grams*(sale-cost);
+      const margin = sale>0 ? (((sale-cost)/sale)*100).toFixed(1) : 0;
+      el.innerHTML = `
+        <div class="prow"><span>Total de gramas</span><span style="color:var(--text)">${G(grams)}</span></div>
+        <div class="prow"><span>Custo total do lote</span><span style="color:var(--red)">${R(grams*cost)}</span></div>
+        <div class="prow"><span>Receita potencial (se vender tudo)</span><span style="color:var(--accent-light)">${R(grams*sale)}</span></div>
+        <div class="prow total"><span>Lucro potencial</span><span style="color:${sale>=cost?'var(--green)':'var(--red)'}">${R(lucro)} <span style="font-size:11px;opacity:0.7">(${margin}% margem)</span></span></div>`;
+      el.classList.remove('hidden');
+    } else { el.classList.add('hidden'); }
+  }
+
+  function updateSPreview() {
+    const productId = parseInt(document.getElementById('s-product').value);
+    const grams = parseFloat(document.getElementById('s-qty').value);
+    const el = document.getElementById('s-preview');
+    const product = products.find(p=>p.id===productId);
+    if (product && grams>0) {
+      const revenue = grams * product.salePerG;
+      const cost = grams * product.costPerG;
+      const profit = revenue - cost;
+      const ok = grams <= product.grams;
+      el.innerHTML = `
+        <div class="prow"><span>Gramas vendidas</span><span style="color:${ok?'var(--text)':'var(--red)'}">${G(grams)} ${!ok?'<strong>(sem estoque!)</strong>':''}</span></div>
+        <div class="prow"><span>Preço de venda</span><span style="color:var(--text)">${R(product.salePerG)}/g</span></div>
+        <div class="prow"><span>Custo da venda</span><span style="color:var(--red)">${R(cost)}</span></div>
+        <div class="prow"><span>Receita da venda</span><span style="color:var(--accent-light)">${R(revenue)}</span></div>
+        <div class="prow total"><span>Lucro desta venda</span><span style="color:var(--green)">${R(profit)}</span></div>`;
+      el.classList.remove('hidden');
+    } else { el.classList.add('hidden'); }
+  }
+
+  renderAll();
+</script>
+</body>
+</html>
