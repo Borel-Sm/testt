@@ -15,6 +15,7 @@
       --red: #c06050; --red-dim: rgba(192,96,80,0.15);
       --blue: #6a9fc0; --blue-dim: rgba(106,159,192,0.15);
       --purple: #a07ec8; --purple-dim: rgba(160,126,200,0.15);
+      --gold: #d4a843; --gold-dim: rgba(212,168,67,0.15);
     }
     body { font-family: 'Crimson Pro', Georgia, serif; background: var(--bg); color: var(--text); min-height: 100vh; }
     .topbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 20px 0; position: sticky; top: 0; z-index: 10; }
@@ -44,6 +45,7 @@
     .stat-card.red::before { background: linear-gradient(90deg, var(--red), transparent); }
     .stat-card.blue::before { background: linear-gradient(90deg, var(--blue), transparent); }
     .stat-card.purple::before { background: linear-gradient(90deg, var(--purple), transparent); }
+    .stat-card.gold::before { background: linear-gradient(90deg, var(--gold), transparent); }
     .stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); margin-bottom: 6px; }
     .stat-value { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; }
     .stat-sub { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
@@ -60,6 +62,7 @@
     .badge-red { background: var(--red-dim); color: var(--red); }
     .badge-blue { background: var(--blue-dim); color: var(--blue); }
     .badge-purple { background: var(--purple-dim); color: var(--purple); }
+    .badge-gold { background: var(--gold-dim); color: var(--gold); }
     .cat-flor { background: rgba(122,173,94,0.2); color: var(--green); border-radius: 4px; padding: 2px 8px; font-size: 11px; font-weight: 600; }
     .cat-nflor { background: var(--blue-dim); color: var(--blue); border-radius: 4px; padding: 2px 8px; font-size: 11px; font-weight: 600; }
     .form-stack { display: flex; flex-direction: column; gap: 12px; }
@@ -86,6 +89,8 @@
     .btn-success:hover { background: rgba(122,173,94,0.25); }
     .btn-purple { background: var(--purple-dim); color: var(--purple); border: 1px solid rgba(160,126,200,0.3); padding: 6px 10px; font-size: 12px; width: auto; font-family: 'Crimson Pro', serif; font-weight: 600; cursor: pointer; border-radius: 8px; transition: all 0.18s; }
     .btn-purple:hover { background: rgba(160,126,200,0.25); }
+    .btn-blue { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(106,159,192,0.3); padding: 6px 10px; font-size: 12px; width: auto; font-family: 'Crimson Pro', serif; font-weight: 600; cursor: pointer; border-radius: 8px; transition: all 0.18s; }
+    .btn-blue:hover { background: rgba(106,159,192,0.25); }
     .section-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
     .divider { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
     .empty-state { text-align: center; padding: 32px; color: var(--text-dim); font-size: 14px; }
@@ -111,6 +116,11 @@
     .stock-info { display: flex; align-items: center; gap: 8px; }
     .stock-num { font-weight: 600; min-width: 55px; font-size: 13px; }
 
+    /* ── PROMOÇÃO N/FLOR ── */
+    .promo-banner { background: linear-gradient(135deg, rgba(212,168,67,0.15), rgba(212,168,67,0.05)); border: 1px solid rgba(212,168,67,0.35); border-radius: 10px; padding: 10px 14px; display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--gold); animation: promoPulse 2.5s ease-in-out infinite; }
+    @keyframes promoPulse { 0%,100% { border-color: rgba(212,168,67,0.35); } 50% { border-color: rgba(212,168,67,0.7); box-shadow: 0 0 12px rgba(212,168,67,0.15); } }
+    .promo-tag { background: var(--gold); color: #110d06; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px; letter-spacing: 0.05em; }
+
     /* ── CALCULADORA FLUTUANTE ── */
     .calc-fab { position: fixed; bottom: 24px; right: 20px; width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), #a06820); border: none; cursor: pointer; font-size: 22px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(200,133,42,0.4); z-index: 100; transition: transform 0.2s, box-shadow 0.2s; }
     .calc-fab:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(200,133,42,0.55); }
@@ -134,13 +144,13 @@
     .calc-title { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); }
     .calc-close { background: none; border: none; cursor: pointer; color: var(--text-dim); font-size: 18px; line-height: 1; padding: 2px 4px; }
     .calc-close:hover { color: var(--text); }
-
+      
     /* ── FIADO ── */
     .fiado-status-pago { background: var(--green-dim); color: var(--green); border-radius: 4px; padding: 2px 8px; font-size: 11px; font-weight: 600; }
     .fiado-status-pendente { background: var(--purple-dim); color: var(--purple); border-radius: 4px; padding: 2px 8px; font-size: 11px; font-weight: 600; }
     .fiado-status-atrasado { background: var(--red-dim); color: var(--red); border-radius: 4px; padding: 2px 8px; font-size: 11px; font-weight: 600; }
 
-    /* ── TOGGLE FIADO NA VENDA ── */
+    /* ── TOGGLE FIADO ── */
     .toggle-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; user-select: none; }
     .toggle-switch { width: 36px; height: 20px; background: var(--border); border-radius: 10px; position: relative; transition: background 0.2s; flex-shrink: 0; }
     .toggle-switch.on { background: var(--purple); }
@@ -148,6 +158,24 @@
     .toggle-switch.on::after { left: 19px; }
     .toggle-label { font-size: 13px; color: var(--text-muted); }
     .toggle-label strong { color: var(--purple); }
+
+    /* ── CLIENTES / PERFIL ── */
+    .client-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 12px; overflow: hidden; transition: border-color 0.2s; }
+    .client-card:hover { border-color: var(--accent); }
+    .client-card-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; cursor: pointer; }
+    .client-avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-dim), var(--surface)); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: var(--accent-light); flex-shrink: 0; }
+    .client-info { flex: 1; margin-left: 12px; }
+    .client-name { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 600; color: var(--text); }
+    .client-meta { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .client-stats { display: flex; gap: 16px; text-align: right; flex-shrink: 0; }
+    .client-stat { }
+    .client-stat-val { font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 600; }
+    .client-stat-lbl { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; }
+    .client-expand { color: var(--text-dim); font-size: 16px; margin-left: 12px; transition: transform 0.2s; }
+    .client-card.open .client-expand { transform: rotate(90deg); }
+    .client-body { display: none; padding: 0 16px 14px; border-top: 1px solid var(--border); }
+    .client-card.open .client-body { display: block; }
+    .client-section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); margin: 12px 0 6px; }
 
     /* ── TOAST ── */
     .toast { position: fixed; bottom: 86px; right: 20px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 10px 16px; font-size: 13px; color: var(--text); z-index: 300; max-width: 260px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); transform: translateY(0); opacity: 1; transition: all 0.3s; }
@@ -175,22 +203,18 @@
       <button class="calc-btn op" onclick="calcSign()">+/−</button>
       <button class="calc-btn op" onclick="calcPercent()">%</button>
       <button class="calc-btn op" onclick="calcOp('/')">÷</button>
-
       <button class="calc-btn" onclick="calcNum('7')">7</button>
       <button class="calc-btn" onclick="calcNum('8')">8</button>
       <button class="calc-btn" onclick="calcNum('9')">9</button>
       <button class="calc-btn op" onclick="calcOp('*')">×</button>
-
       <button class="calc-btn" onclick="calcNum('4')">4</button>
       <button class="calc-btn" onclick="calcNum('5')">5</button>
       <button class="calc-btn" onclick="calcNum('6')">6</button>
       <button class="calc-btn op" onclick="calcOp('-')">−</button>
-
       <button class="calc-btn" onclick="calcNum('1')">1</button>
       <button class="calc-btn" onclick="calcNum('2')">2</button>
       <button class="calc-btn" onclick="calcNum('3')">3</button>
       <button class="calc-btn op" onclick="calcOp('+')">+</button>
-
       <button class="calc-btn span2" onclick="calcNum('0')">0</button>
       <button class="calc-btn" onclick="calcDot()">.</button>
       <button class="calc-btn eq" onclick="calcEquals()">=</button>
@@ -214,6 +238,7 @@
     <button class="nav-item" onclick="showTab('estoque',this)">⊟ Estoque</button>
     <button class="nav-item" onclick="showTab('vendas',this)">⊕ Vendas</button>
     <button class="nav-item" onclick="showTab('fiado',this)">📒 Fiado</button>
+    <button class="nav-item" onclick="showTab('clientes',this)">👤 Clientes</button>
     <button class="nav-item" onclick="showTab('relatorios',this)">◎ Relatórios</button>
   </nav>
 </div>
@@ -322,10 +347,19 @@
       <div class="card-title">Nova Venda</div>
       <hr class="divider" />
       <div id="s-alert"></div>
+      <!-- Banner promoção N/FLOR -->
+      <div class="promo-banner" id="promo-banner" style="margin-bottom:12px;display:none">
+        <span style="font-size:18px">🎯</span>
+        <div style="flex:1">
+          <div style="font-weight:700;font-size:13px">Promoção N/FLOR ativa!</div>
+          <div style="font-size:12px;opacity:0.8">Pedidos acima de 250g na categoria N/FLOR ganham <strong>20% de desconto</strong> automático.</div>
+        </div>
+        <span class="promo-tag">−20%</span>
+      </div>
       <div class="form-stack">
         <div class="field">
           <label>Produto</label>
-          <select id="s-product" onchange="updateSPreview()">
+          <select id="s-product" onchange="onProductChange()">
             <option value="">Selecione um produto...</option>
           </select>
         </div>
@@ -336,7 +370,8 @@
           </div>
           <div class="field">
             <label>Comprador</label>
-            <input id="s-buyer" placeholder="Nome do cliente" oninput="updateFiadoField()" />
+            <input id="s-buyer" placeholder="Nome do cliente" list="clients-datalist" oninput="updateFiadoField()" />
+            <datalist id="clients-datalist"></datalist>
           </div>
         </div>
 
@@ -346,7 +381,6 @@
           <span class="toggle-label">Venda no <strong>fiado</strong> — pagar no próximo mês</span>
         </div>
 
-        <!-- Campo data vencimento fiado (hidden by default) -->
         <div class="field hidden" id="fiado-due-wrap">
           <label>📅 Data de Vencimento</label>
           <input type="date" id="s-due-date" />
@@ -395,6 +429,22 @@
     </div>
   </div>
 
+  <!-- CLIENTES -->
+  <div id="page-clientes" class="page">
+    <div class="page-header">
+      <div class="page-title">👤 Perfis de Clientes</div>
+      <div class="page-subtitle">Histórico completo por cliente — vendas, fiados e total gasto</div>
+    </div>
+    <div class="stat-grid-3" id="c-stats-top">
+      <div class="stat-card gold"><div class="stat-icon">👥</div><div class="stat-label">Clientes Únicos</div><div class="stat-value" style="color:var(--gold)" id="c-total-clients">—</div><div class="stat-sub">registrados</div></div>
+      <div class="stat-card green"><div class="stat-icon">💰</div><div class="stat-label">Maior Cliente</div><div class="stat-value" style="color:var(--green);font-size:15px" id="c-top-client">—</div><div class="stat-sub" id="c-top-client-val">—</div></div>
+      <div class="stat-card purple"><div class="stat-icon">📒</div><div class="stat-label">Clientes c/ Fiado</div><div class="stat-value" style="color:var(--purple)" id="c-fiado-clients">—</div><div class="stat-sub">com saldo pendente</div></div>
+    </div>
+    <div id="c-list">
+      <div class="empty-state"><div class="empty-icon">👤</div>Nenhum cliente registrado ainda.<br><span style="font-size:12px">Os perfis são criados automaticamente ao registrar vendas.</span></div>
+    </div>
+  </div>
+
   <!-- RELATÓRIOS -->
   <div id="page-relatorios" class="page">
     <div class="page-header">
@@ -438,7 +488,7 @@
 
 <script>
 // ══════════════════════════════════════════════════════
-//  LOCALSTORAGE — Persistência
+//  LOCALSTORAGE
 // ══════════════════════════════════════════════════════
 const LS_PRODUCTS = 'gsm_products';
 const LS_SALES    = 'gsm_sales';
@@ -451,7 +501,6 @@ function saveState() {
   localStorage.setItem(LS_FIADOS,   JSON.stringify(fiados));
   localStorage.setItem(LS_IDS,      JSON.stringify({ nextPId, nextSId, nextFId }));
 }
-
 function loadState() {
   try {
     const p = localStorage.getItem(LS_PRODUCTS);
@@ -472,21 +521,27 @@ let products = [], sales = [], fiados = [];
 let nextPId = 1, nextSId = 1, nextFId = 1;
 let isFiado = false;
 
-// Dados de exemplo (só carregam se não houver dados salvos)
+const NFLOR_PROMO_GRAMS    = 250;
+const NFLOR_PROMO_DISCOUNT = 0.20; // 20%
+
 const defaultProducts = [
   { id:1, name:"White Widow", category:"Flor", grams:100, costPerG:15, salePerG:30, dateAdded:"2026-05-10T08:00:00" },
-  { id:2, name:"Hash Marroquino", category:"N/FLOR", grams:50, costPerG:20, salePerG:40, dateAdded:"2026-05-12T10:00:00" },
+  { id:2, name:"Hash Marroquino", category:"N/FLOR", grams:500, costPerG:20, salePerG:40, dateAdded:"2026-05-12T10:00:00" },
   { id:3, name:"Purple Haze", category:"Flor", grams:80, costPerG:18, salePerG:35, dateAdded:"2026-05-14T09:00:00" },
 ];
 const defaultSales = [
-  { id:1, productId:1, productName:"White Widow", category:"Flor", grams:7, costPerG:15, salePerG:30, revenue:210, cost:105, date:"2026-05-18T10:00:00", buyer:"João S.", paymentType:"avista" },
-  { id:2, productId:2, productName:"Hash Marroquino", category:"N/FLOR", grams:3.5, costPerG:20, salePerG:40, revenue:140, cost:70, date:"2026-05-20T14:30:00", buyer:"Maria L.", paymentType:"avista" },
-  { id:3, productId:3, productName:"Purple Haze", category:"Flor", grams:5, costPerG:18, salePerG:35, revenue:175, cost:90, date:"2026-05-22T11:00:00", buyer:"Pedro A.", paymentType:"avista" },
+  { id:1, productId:1, productName:"White Widow", category:"Flor", grams:7, costPerG:15, salePerG:30, revenue:210, cost:105, date:"2026-05-18T10:00:00", buyer:"João S.", paymentType:"avista", promoApplied:false },
+  { id:2, productId:2, productName:"Hash Marroquino", category:"N/FLOR", grams:3.5, costPerG:20, salePerG:40, revenue:140, cost:70, date:"2026-05-20T14:30:00", buyer:"Maria L.", paymentType:"avista", promoApplied:false },
+  { id:3, productId:3, productName:"Purple Haze", category:"Flor", grams:5, costPerG:18, salePerG:35, revenue:175, cost:90, date:"2026-05-22T11:00:00", buyer:"Alan", paymentType:"fiado", promoApplied:false },
+];
+const defaultFiados = [
+  { id:1, saleId:3, buyer:"Alan", productName:"Purple Haze", grams:5, value:175, dueDate:"2026-06-22", status:"pendente", createdAt:"2026-05-22T11:00:00", paidAt:null }
 ];
 
 loadState();
 if (!products.length) { products = defaultProducts; nextPId = 4; }
 if (!sales.length)    { sales    = defaultSales;    nextSId = 4; }
+if (!fiados.length)   { fiados   = defaultFiados;   nextFId = 2; }
 
 // ══════════════════════════════════════════════════════
 //  HELPERS
@@ -496,29 +551,78 @@ const G = v => parseFloat(v).toFixed(1).replace('.',',') + 'g';
 const fmtDate = iso => { const d = new Date(iso); return d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}); };
 const fmtDateOnly = iso => iso ? new Date(iso+'T00:00:00').toLocaleDateString('pt-BR') : '—';
 const catBadge = c => c === 'Flor' ? '<span class="cat-flor">🌿 Flor</span>' : '<span class="cat-nflor">📦 N/FLOR</span>';
-const payBadge = type => type === 'fiado'
-  ? '<span class="badge-purple badge" style="font-size:11px">📒 Fiado</span>'
-  : '<span class="badge-green badge" style="font-size:11px">💵 À Vista</span>';
+const payBadge = (type, promo) => {
+  let badge = type === 'fiado'
+    ? '<span class="badge-purple badge" style="font-size:11px">📒 Fiado</span>'
+    : '<span class="badge-green badge" style="font-size:11px">💵 À Vista</span>';
+  if (promo) badge += ' <span class="badge-gold badge" style="font-size:10px">🎯 −20%</span>';
+  return badge;
+};
 
 function showAlert(id, type, msg) {
   document.getElementById(id).innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
-  if (type==='success') setTimeout(()=>document.getElementById(id).innerHTML='', 3000);
+  if (type==='success') setTimeout(()=>document.getElementById(id).innerHTML='', 3500);
 }
-
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.remove('hide');
   clearTimeout(window._toastTimer);
-  window._toastTimer = setTimeout(() => t.classList.add('hide'), 2600);
+  window._toastTimer = setTimeout(() => t.classList.add('hide'), 2800);
 }
-
 function showTab(tab, btn) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
   document.getElementById('page-'+tab).classList.add('active');
   btn.classList.add('active');
   renderAll();
+}
+
+// ══════════════════════════════════════════════════════
+//  CLIENTES — aggregação por nome
+// ══════════════════════════════════════════════════════
+function getClients() {
+  const map = {};
+  // Agrupa vendas por comprador
+  sales.forEach(s => {
+    const name = s.buyer && s.buyer !== '—' ? s.buyer : null;
+    if (!name) return;
+    if (!map[name]) map[name] = { name, sales:[], fiados:[] };
+    map[name].sales.push(s);
+  });
+  // Agrega fiados por comprador
+  fiados.forEach(f => {
+    const name = f.buyer;
+    if (!map[name]) map[name] = { name, sales:[], fiados:[] };
+    if (!map[name].fiados) map[name].fiados = [];
+    // Evita duplicata (fiados já linkados na venda)
+    if (!map[name].fiados.find(x => x.id === f.id)) {
+      map[name].fiados.push(f);
+    }
+  });
+  return Object.values(map);
+}
+
+function getClientStats(client) {
+  const totalGasto   = client.sales.reduce((a,s)=>a+s.revenue,0);
+  const totalGramas  = client.sales.reduce((a,s)=>a+s.grams,0);
+  const fiadosPend   = client.fiados.filter(f=>f.status!=='pago');
+  const fiadosPago   = client.fiados.filter(f=>f.status==='pago');
+  const pendVal      = fiadosPend.reduce((a,f)=>a+f.value,0);
+  const pagoVal      = fiadosPago.reduce((a,f)=>a+f.value,0);
+  return { totalGasto, totalGramas, fiadosPend, fiadosPago, pendVal, pagoVal };
+}
+
+// ══════════════════════════════════════════════════════
+//  PROMO N/FLOR — calcula preço efetivo
+// ══════════════════════════════════════════════════════
+function calcPromo(product, grams) {
+  const isNflor   = product.category === 'N/FLOR';
+  const promoHits = isNflor && grams > NFLOR_PROMO_GRAMS;
+  const effectiveSalePerG = promoHits
+    ? parseFloat((product.salePerG * (1 - NFLOR_PROMO_DISCOUNT)).toFixed(4))
+    : product.salePerG;
+  return { promoHits, effectiveSalePerG };
 }
 
 // ══════════════════════════════════════════════════════
@@ -559,9 +663,6 @@ function renderDashboard() {
   const cost     = sales.reduce((a,s)=>a+s.cost,0);
   const profit   = revenue - cost;
   const margin   = revenue > 0 ? ((profit/revenue)*100).toFixed(1) : 0;
-  const flores   = products.filter(p=>p.category==='Flor').length;
-  const nflores  = products.filter(p=>p.category==='N/FLOR').length;
-
   const fPend    = fiados.filter(f=>f.status==='pendente'||f.status==='atrasado');
   const fPendVal = fPend.reduce((a,f)=>a+f.value,0);
 
@@ -583,7 +684,7 @@ function renderDashboard() {
     <td>${G(s.grams)}</td>
     <td><span class="badge badge-amber">${R(s.revenue)}</span></td>
     <td><span class="badge badge-green">${R(s.revenue-s.cost)}</span></td>
-    <td>${payBadge(s.paymentType)}</td>
+    <td>${payBadge(s.paymentType, s.promoApplied)}</td>
   </tr>`).join('') : '<tr><td colspan="6" class="empty-state">Sem vendas</td></tr>';
 
   const low = products.filter(p=>p.grams<=10);
@@ -606,8 +707,9 @@ function renderEstoque() {
     const margin   = p.salePerG > 0 ? (((p.salePerG-p.costPerG)/p.salePerG)*100).toFixed(0) : 0;
     const qBadge   = p.grams <= 10 ? 'badge-red' : p.grams <= 30 ? 'badge-amber' : 'badge-green';
     const stockVal = p.grams * p.costPerG;
+    const promoNote = p.category === 'N/FLOR' ? ' <span class="badge-gold badge" style="font-size:10px">🎯 promo>250g</span>' : '';
     return `<tr>
-      <td><strong style="font-size:13px">${p.name}</strong></td>
+      <td><strong style="font-size:13px">${p.name}</strong>${promoNote}</td>
       <td>${catBadge(p.category)}</td>
       <td><span class="badge ${qBadge}">${G(p.grams)}</span></td>
       <td style="color:var(--red);font-size:12px">${R(p.costPerG)}<span class="gram-tag">/g</span></td>
@@ -623,6 +725,10 @@ function renderEstoque() {
 //  VENDAS
 // ══════════════════════════════════════════════════════
 function renderVendas() {
+  // Atualiza datalist de clientes
+  const clientNames = [...new Set(sales.filter(s=>s.buyer && s.buyer!=='—').map(s=>s.buyer))];
+  document.getElementById('clients-datalist').innerHTML = clientNames.map(n=>`<option value="${n}">`).join('');
+
   const sel = document.getElementById('s-product');
   const cur = sel.value;
   sel.innerHTML = '<option value="">Selecione um produto...</option>' +
@@ -637,14 +743,14 @@ function renderVendas() {
   tbody.innerHTML = sales.map(s=>`<tr>
     <td>
       <strong style="font-size:13px">${s.productName}</strong>
-      ${s.buyer && s.buyer !== '—' ? `<div style="font-size:11px;color:var(--text-muted)">${s.buyer}</div>` : ''}
+      ${s.buyer && s.buyer !== '—' ? `<div style="font-size:11px;color:var(--text-muted)">👤 ${s.buyer}</div>` : ''}
     </td>
     <td>${catBadge(s.category)}</td>
     <td><span class="badge badge-amber">${G(s.grams)}</span></td>
     <td style="font-size:12px;color:var(--green)">${R(s.salePerG)}<span class="gram-tag">/g</span></td>
     <td><span class="badge badge-amber">${R(s.revenue)}</span></td>
     <td><span class="badge badge-green">${R(s.revenue-s.cost)}</span></td>
-    <td>${payBadge(s.paymentType)}</td>
+    <td>${payBadge(s.paymentType, s.promoApplied)}</td>
     <td style="font-size:11px;color:var(--text-muted);white-space:nowrap">${fmtDate(s.date)}</td>
     <td><button class="btn btn-danger" onclick="removeSale(${s.id})">✕</button></td>
   </tr>`).join('');
@@ -666,10 +772,7 @@ function getFiadoStatus(f) {
 function renderFiado() {
   const pending = fiados.filter(f => f.status !== 'pago');
   const paid    = fiados.filter(f => f.status === 'pago');
-
-  // recalc live status
   pending.forEach(f => { f.liveStatus = getFiadoStatus(f); });
-
   const atrasados  = pending.filter(f => f.liveStatus === 'atrasado');
   const totalPend  = pending.reduce((a,f)=>a+f.value,0);
   const totalAtras = atrasados.reduce((a,f)=>a+f.value,0);
@@ -720,6 +823,118 @@ function renderFiado() {
 }
 
 // ══════════════════════════════════════════════════════
+//  CLIENTES
+// ══════════════════════════════════════════════════════
+function renderClientes() {
+  const clients = getClients();
+  const container = document.getElementById('c-list');
+
+  if (!clients.length) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">👤</div>Nenhum cliente registrado ainda.<br><span style="font-size:12px">Os perfis são criados automaticamente ao registrar vendas com nome de comprador.</span></div>';
+    document.getElementById('c-total-clients').textContent = '0';
+    document.getElementById('c-top-client').textContent = '—';
+    document.getElementById('c-top-client-val').textContent = 'Sem dados';
+    document.getElementById('c-fiado-clients').textContent = '0';
+    return;
+  }
+
+  // Stats topo
+  const sorted = [...clients].sort((a,b) => {
+    const sa = getClientStats(a); const sb = getClientStats(b);
+    return sb.totalGasto - sa.totalGasto;
+  });
+  const top = sorted[0];
+  const topStats = getClientStats(top);
+  const fiadoClients = clients.filter(c => {
+    const st = getClientStats(c);
+    return st.fiadosPend.length > 0;
+  });
+
+  document.getElementById('c-total-clients').textContent = clients.length;
+  document.getElementById('c-top-client').textContent    = top.name;
+  document.getElementById('c-top-client-val').textContent = R(topStats.totalGasto) + ' em compras';
+  document.getElementById('c-fiado-clients').textContent = fiadoClients.length;
+
+  container.innerHTML = sorted.map((client, idx) => {
+    const st = getClientStats(client);
+    const initials = client.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    const hasPendFiado = st.fiadosPend.length > 0;
+    const fiadoBadge   = hasPendFiado
+      ? `<span class="badge badge-purple" style="font-size:11px">📒 ${R(st.pendVal)} pendente</span>`
+      : (st.fiadosPago.length > 0 ? `<span class="badge badge-green" style="font-size:11px">✓ Fiados em dia</span>` : '');
+
+    return `<div class="client-card" id="ccard-${idx}">
+      <div class="client-card-header" onclick="toggleClientCard(${idx})">
+        <div class="client-avatar">${initials}</div>
+        <div class="client-info">
+          <div class="client-name">${client.name} ${idx===0?'<span class="badge-gold badge" style="font-size:10px">⭐ Top</span>':''}</div>
+          <div class="client-meta">${client.sales.length} compra(s) · ${G(st.totalGramas)} · ${fiadoBadge}</div>
+        </div>
+        <div class="client-stats">
+          <div class="client-stat">
+            <div class="client-stat-val" style="color:var(--accent-light)">${R(st.totalGasto)}</div>
+            <div class="client-stat-lbl">Total gasto</div>
+          </div>
+        </div>
+        <span class="client-expand">▶</span>
+      </div>
+      <div class="client-body">
+        ${hasPendFiado ? `
+        <div class="client-section-title">📒 Fiados Pendentes</div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Produto</th><th>Gramas</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>Ação</th></tr></thead>
+          <tbody>
+            ${st.fiadosPend.map(f => {
+              const ls = getFiadoStatus(f);
+              const sb = ls==='atrasado'
+                ? '<span class="fiado-status-atrasado">⏰ Atrasado</span>'
+                : '<span class="fiado-status-pendente">📒 Pendente</span>';
+              return `<tr>
+                <td>${f.productName}</td>
+                <td>${G(f.grams)}</td>
+                <td><span class="badge badge-purple">${R(f.value)}</span></td>
+                <td style="font-size:12px;color:var(--text-muted)">${fmtDateOnly(f.dueDate)}</td>
+                <td>${sb}</td>
+                <td><button class="btn-success" onclick="marcarPago(${f.id});renderAll()">✓ Pago</button></td>
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table></div>` : ''}
+
+        <div class="client-section-title">🧾 Histórico de Compras</div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Produto</th><th>Cat.</th><th>Gramas</th><th>Receita</th><th>Lucro</th><th>Tipo</th><th>Data</th></tr></thead>
+          <tbody>
+            ${client.sales.map(s=>`<tr>
+              <td><strong>${s.productName}</strong></td>
+              <td>${catBadge(s.category)}</td>
+              <td>${G(s.grams)}</td>
+              <td><span class="badge badge-amber">${R(s.revenue)}</span></td>
+              <td><span class="badge badge-green">${R(s.revenue-s.cost)}</span></td>
+              <td>${payBadge(s.paymentType, s.promoApplied)}</td>
+              <td style="font-size:11px;color:var(--text-muted);white-space:nowrap">${fmtDate(s.date)}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table></div>
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;padding-top:10px;border-top:1px solid var(--border);font-size:12px;color:var(--text-muted)">
+          <span>Total gasto: <strong style="color:var(--accent-light)">${R(st.totalGasto)}</strong></span>
+          <span>·</span>
+          <span>Total gramas: <strong style="color:var(--text)">${G(st.totalGramas)}</strong></span>
+          ${hasPendFiado ? `<span>·</span><span>Fiado pendente: <strong style="color:var(--purple)">${R(st.pendVal)}</strong></span>` : ''}
+          ${st.fiadosPago.length>0 ? `<span>·</span><span>Fiado pago: <strong style="color:var(--green)">${R(st.pagoVal)}</strong></span>` : ''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleClientCard(idx) {
+  const card = document.getElementById('ccard-'+idx);
+  card.classList.toggle('open');
+}
+
+// ══════════════════════════════════════════════════════
 //  RELATÓRIOS
 // ══════════════════════════════════════════════════════
 function renderRelatorios() {
@@ -751,7 +966,7 @@ function renderRelatorios() {
     map[s.productName].cost    += s.cost;
   });
   const sorted = Object.entries(map).sort((a,b)=>(b[1].revenue-b[1].cost)-(a[1].revenue-a[1].cost));
-  const byPEl  = document.getElementById('r-by-product');
+  const byPEl = document.getElementById('r-by-product');
   if (!sorted.length) { byPEl.innerHTML = '<div class="empty-state">Sem dados</div>'; }
   else {
     byPEl.innerHTML = '<div style="margin-top:6px">' + sorted.map(([name,d],i)=>{
@@ -789,7 +1004,12 @@ function renderRelatorios() {
 }
 
 function renderAll() {
-  renderDashboard(); renderEstoque(); renderVendas(); renderFiado(); renderRelatorios();
+  renderDashboard();
+  renderEstoque();
+  renderVendas();
+  renderFiado();
+  renderClientes();
+  renderRelatorios();
 }
 
 // ══════════════════════════════════════════════════════
@@ -801,7 +1021,7 @@ function addProduct() {
   const grams    = parseFloat(document.getElementById('p-qty').value);
   const cost     = parseFloat(document.getElementById('p-cost').value);
   const sale     = parseFloat(document.getElementById('p-sale').value);
-  if (!name)           { showAlert('p-alert','error','Informe o nome do produto.'); return; }
+  if (!name)                  { showAlert('p-alert','error','Informe o nome do produto.'); return; }
   if (isNaN(grams)||grams<=0) { showAlert('p-alert','error','Informe a quantidade em gramas.'); return; }
   if (isNaN(cost)||cost<=0)   { showAlert('p-alert','error','Informe o custo por grama.'); return; }
   if (isNaN(sale)||sale<=0)   { showAlert('p-alert','error','Informe o preço de venda por grama.'); return; }
@@ -813,20 +1033,30 @@ function addProduct() {
   document.getElementById('p-sale').value='';
   document.getElementById('p-preview').classList.add('hidden');
   showAlert('p-alert','success',`${name} adicionado ao estoque!`);
-  saveState();
-  renderAll();
+  saveState(); renderAll();
 }
 
 function removeProduct(id) {
   if (!confirm('Remover este produto?')) return;
   products = products.filter(p=>p.id!==id);
-  saveState();
-  renderAll();
+  saveState(); renderAll();
 }
 
 // ══════════════════════════════════════════════════════
 //  AÇÕES — VENDAS
 // ══════════════════════════════════════════════════════
+function onProductChange() {
+  const productId = parseInt(document.getElementById('s-product').value);
+  const product = products.find(p=>p.id===productId);
+  const banner  = document.getElementById('promo-banner');
+  if (product && product.category === 'N/FLOR') {
+    banner.style.display = 'flex';
+  } else {
+    banner.style.display = 'none';
+  }
+  updateSPreview();
+}
+
 function addSale() {
   const productId = parseInt(document.getElementById('s-product').value);
   const grams     = parseFloat(document.getElementById('s-qty').value);
@@ -840,20 +1070,21 @@ function addSale() {
   if (grams > product.grams)    { showAlert('s-alert','error',`Estoque insuficiente. Disponível: ${G(product.grams)}`); return; }
   if (isFiado && buyer === '—') { showAlert('s-alert','error','Informe o nome do cliente para fiado.'); return; }
 
-  const revenue = parseFloat((grams * product.salePerG).toFixed(2));
+  const { promoHits, effectiveSalePerG } = calcPromo(product, grams);
+  const revenue = parseFloat((grams * effectiveSalePerG).toFixed(2));
   const cost    = parseFloat((grams * product.costPerG).toFixed(2));
 
   const saleObj = {
     id: nextSId++, productId: product.id, productName: product.name,
     category: product.category, grams, costPerG: product.costPerG,
-    salePerG: product.salePerG, revenue, cost,
+    salePerG: effectiveSalePerG, revenue, cost,
     date: new Date().toISOString(), buyer,
-    paymentType: isFiado ? 'fiado' : 'avista'
+    paymentType: isFiado ? 'fiado' : 'avista',
+    promoApplied: promoHits
   };
   sales.unshift(saleObj);
   product.grams = parseFloat((product.grams - grams).toFixed(2));
 
-  // Criar registro de fiado se necessário
   if (isFiado) {
     fiados.push({
       id: nextFId++, saleId: saleObj.id,
@@ -871,19 +1102,29 @@ function addSale() {
   document.getElementById('s-buyer').value='';
   document.getElementById('s-due-date').value='';
   document.getElementById('s-preview').classList.add('hidden');
-  if (isFiado) { isFiado=false; document.getElementById('fiado-toggle').classList.remove('on'); document.getElementById('fiado-due-wrap').classList.add('hidden'); }
+  document.getElementById('promo-banner').style.display = 'none';
+  if (isFiado) {
+    isFiado = false;
+    document.getElementById('fiado-toggle').classList.remove('on');
+    document.getElementById('fiado-due-wrap').classList.add('hidden');
+  }
 
-  showAlert('s-alert','success', isFiado ? `Fiado registrado para ${buyer}!` : `Venda registrada! Lucro: ${R(revenue-cost)}`);
-  showToast(isFiado ? `📒 Fiado anotado: ${buyer} deve ${R(revenue)}` : `✅ Venda: lucro de ${R(revenue-cost)}`);
-  saveState();
-  renderAll();
+  const promoMsg = promoHits ? ' 🎯 Desconto de 20% aplicado!' : '';
+  const successMsg = isFiado
+    ? `Fiado registrado para ${buyer}!${promoMsg}`
+    : `Venda registrada! Lucro: ${R(revenue-cost)}${promoMsg}`;
+  showAlert('s-alert','success', successMsg);
+  showToast(promoHits
+    ? `🎯 Promo N/FLOR! ${buyer !== '—' ? buyer + ' · ' : ''}${R(revenue)} (−20%)`
+    : (isFiado ? `📒 Fiado: ${buyer} deve ${R(revenue)}` : `✅ Venda: lucro ${R(revenue-cost)}`));
+
+  saveState(); renderAll();
 }
 
 function removeSale(id) {
   if (!confirm('Remover esta venda?')) return;
   sales = sales.filter(s=>s.id!==id);
-  saveState();
-  renderAll();
+  saveState(); renderAll();
 }
 
 // ══════════════════════════════════════════════════════
@@ -896,32 +1137,26 @@ function marcarPago(id) {
   f.status = 'pago';
   f.paidAt = new Date().toISOString();
   showToast(`✅ ${f.buyer} pagou ${R(f.value)}`);
-  saveState();
-  renderAll();
+  saveState(); renderAll();
 }
 
 function removeFiado(id) {
   if (!confirm('Remover este fiado?')) return;
   fiados = fiados.filter(f=>f.id!==id);
-  saveState();
-  renderAll();
+  saveState(); renderAll();
 }
 
 function toggleFiado() {
   isFiado = !isFiado;
   document.getElementById('fiado-toggle').classList.toggle('on', isFiado);
   document.getElementById('fiado-due-wrap').classList.toggle('hidden', !isFiado);
-
-  // Default due date = 1 month from now
   if (isFiado && !document.getElementById('s-due-date').value) {
     const d = new Date(); d.setMonth(d.getMonth()+1);
     document.getElementById('s-due-date').value = d.toISOString().split('T')[0];
   }
 }
 
-function updateFiadoField() {
-  // nothing extra needed, buyer input updates on its own
-}
+function updateFiadoField() { /* buyer input updates on its own */ }
 
 // ══════════════════════════════════════════════════════
 //  PREVIEWS
@@ -949,13 +1184,18 @@ function updateSPreview() {
   const el        = document.getElementById('s-preview');
   const product   = products.find(p=>p.id===productId);
   if (product && grams>0) {
-    const revenue = grams * product.salePerG;
+    const { promoHits, effectiveSalePerG } = calcPromo(product, grams);
+    const revenue = grams * effectiveSalePerG;
     const cost    = grams * product.costPerG;
     const profit  = revenue - cost;
     const ok      = grams <= product.grams;
+    const promoLine = promoHits
+      ? `<div class="prow" style="color:var(--gold)"><span>🎯 Promoção N/FLOR (−20%)</span><span>−${R(grams*(product.salePerG-effectiveSalePerG))}</span></div>`
+      : '';
     el.innerHTML = `
-      <div class="prow"><span>Gramas vendidas</span><span style="color:${ok?'var(--text)':'var(--red)'}">${G(grams)} ${!ok?'<strong>(sem estoque!)</strong>':''}</span></div>
-      <div class="prow"><span>Preço de venda</span><span style="color:var(--text)">${R(product.salePerG)}/g</span></div>
+      <div class="prow"><span>Gramas vendidas</span><span style="color:${ok?'var(--text)':'var(--red)'}">${G(grams)}${!ok?' <strong>(sem estoque!)</strong>':''}</span></div>
+      <div class="prow"><span>Preço de venda</span><span style="color:var(--text)">${R(effectiveSalePerG)}/g${promoHits?` <span style="color:var(--text-dim);text-decoration:line-through;font-size:11px">${R(product.salePerG)}</span>`:''}</span></div>
+      ${promoLine}
       <div class="prow"><span>Custo da venda</span><span style="color:var(--red)">${R(cost)}</span></div>
       <div class="prow"><span>Receita da venda</span><span style="color:var(--accent-light)">${R(revenue)}</span></div>
       <div class="prow total"><span>Lucro desta venda</span><span style="color:var(--green)">${R(profit)}</span></div>`;
@@ -968,13 +1208,8 @@ function updateSPreview() {
 // ══════════════════════════════════════════════════════
 let calcCurrent = '0', calcPrev = '', calcOper = null, calcReset = false;
 
-function toggleCalc() {
-  const ov = document.getElementById('calc-overlay');
-  ov.classList.toggle('open');
-}
-function closeCalcOutside(e) {
-  if (e.target === document.getElementById('calc-overlay')) toggleCalc();
-}
+function toggleCalc() { document.getElementById('calc-overlay').classList.toggle('open'); }
+function closeCalcOutside(e) { if (e.target === document.getElementById('calc-overlay')) toggleCalc(); }
 function updateCalcScreen() {
   document.getElementById('calc-val').textContent  = calcCurrent;
   document.getElementById('calc-expr').textContent = calcOper ? calcPrev + ' ' + calcOper : '';
@@ -991,39 +1226,31 @@ function calcDot() {
 }
 function calcOp(op) {
   if (calcOper && !calcReset) calcEquals();
-  calcPrev  = calcCurrent;
-  calcOper  = op;
-  calcReset = true;
-  updateCalcScreen();
+  calcPrev = calcCurrent; calcOper = op; calcReset = true; updateCalcScreen();
 }
 function calcEquals() {
   if (!calcOper || calcReset) return;
   const a = parseFloat(calcPrev), b = parseFloat(calcCurrent);
   let res;
-  if (calcOper === '+') res = a + b;
-  else if (calcOper === '-') res = a - b;
-  else if (calcOper === '*') res = a * b;
-  else if (calcOper === '/') res = b !== 0 ? a / b : 'Erro';
-  calcCurrent = typeof res === 'number' ? parseFloat(res.toFixed(10)).toString() : res;
-  calcOper = null; calcPrev = ''; calcReset = true;
-  updateCalcScreen();
+  if (calcOper==='+') res=a+b; else if (calcOper==='-') res=a-b;
+  else if (calcOper==='*') res=a*b; else if (calcOper==='/') res=b!==0?a/b:'Erro';
+  calcCurrent = typeof res==='number' ? parseFloat(res.toFixed(10)).toString() : res;
+  calcOper=null; calcPrev=''; calcReset=true; updateCalcScreen();
 }
 function calcAC()      { calcCurrent='0'; calcPrev=''; calcOper=null; calcReset=false; updateCalcScreen(); }
 function calcSign()    { calcCurrent = String(parseFloat(calcCurrent)*-1); updateCalcScreen(); }
 function calcPercent() { calcCurrent = String(parseFloat(calcCurrent)/100); updateCalcScreen(); }
 
-// Teclado físico na calculadora
 document.addEventListener('keydown', e => {
   if (!document.getElementById('calc-overlay').classList.contains('open')) return;
-  if (e.key >= '0' && e.key <= '9') calcNum(e.key);
-  else if (e.key === '.') calcDot();
-  else if (e.key === '+') calcOp('+');
-  else if (e.key === '-') calcOp('-');
-  else if (e.key === '*') calcOp('*');
-  else if (e.key === '/') { e.preventDefault(); calcOp('/'); }
-  else if (e.key === 'Enter' || e.key === '=') calcEquals();
-  else if (e.key === 'Escape') toggleCalc();
-  else if (e.key === 'Backspace') { calcCurrent = calcCurrent.length > 1 ? calcCurrent.slice(0,-1) : '0'; updateCalcScreen(); }
+  if (e.key>='0'&&e.key<='9') calcNum(e.key);
+  else if (e.key==='.') calcDot();
+  else if (e.key==='+') calcOp('+'); else if (e.key==='-') calcOp('-');
+  else if (e.key==='*') calcOp('*');
+  else if (e.key==='/') { e.preventDefault(); calcOp('/'); }
+  else if (e.key==='Enter'||e.key==='=') calcEquals();
+  else if (e.key==='Escape') toggleCalc();
+  else if (e.key==='Backspace') { calcCurrent=calcCurrent.length>1?calcCurrent.slice(0,-1):'0'; updateCalcScreen(); }
 });
 
 // ══════════════════════════════════════════════════════
