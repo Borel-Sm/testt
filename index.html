@@ -144,11 +144,28 @@
     .calc-title { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); }
     .calc-close { background: none; border: none; cursor: pointer; color: var(--text-dim); font-size: 18px; line-height: 1; padding: 2px 4px; }
     .calc-close:hover { color: var(--text); }
-      
+
     /* ── FIADO ── */
     .fiado-status-pago { background: var(--green-dim); color: var(--green); border-radius: 4px; padding: 2px 8px; font-size: 11px; font-weight: 600; }
     .fiado-status-pendente { background: var(--purple-dim); color: var(--purple); border-radius: 4px; padding: 2px 8px; font-size: 11px; font-weight: 600; }
     .fiado-status-atrasado { background: var(--red-dim); color: var(--red); border-radius: 4px; padding: 2px 8px; font-size: 11px; font-weight: 600; }
+
+    /* ── PARCELAMENTO ── */
+    .parcela-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px,1fr)); gap: 8px; margin-top: 6px; }
+    .parcela-option { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; cursor: pointer; transition: all 0.18s; text-align: center; }
+    .parcela-option:hover { border-color: var(--accent); background: var(--accent-dim); }
+    .parcela-option.selected { border-color: var(--accent-light); background: var(--accent-dim); box-shadow: 0 0 0 1px var(--accent); }
+    .parcela-num { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--accent-light); }
+    .parcela-val { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+    .parcela-preview { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; margin-top: 8px; }
+    .parcela-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid rgba(61,44,20,0.4); font-size: 13px; }
+    .parcela-row:last-child { border-bottom: none; }
+    .parcela-row.pago { opacity: 0.45; text-decoration: line-through; }
+    .parcela-num-badge { font-size: 10px; background: var(--accent-dim); color: var(--accent-light); border-radius: 4px; padding: 1px 6px; font-weight: 600; margin-right: 6px; }
+    .parcela-status-pago { color: var(--green); font-size: 11px; font-weight: 600; }
+    .parcela-status-pend { color: var(--purple); font-size: 11px; font-weight: 600; }
+    .parcela-status-atras { color: var(--red); font-size: 11px; font-weight: 600; }
+    .installment-badge { background: rgba(212,168,67,0.15); color: var(--gold); border-radius: 4px; padding: 2px 7px; font-size: 11px; font-weight: 600; }
 
     /* ── TOGGLE FIADO ── */
     .toggle-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; user-select: none; }
@@ -378,12 +395,44 @@
         <!-- Toggle Fiado -->
         <div class="toggle-row" onclick="toggleFiado()">
           <div class="toggle-switch" id="fiado-toggle"></div>
-          <span class="toggle-label">Venda no <strong>fiado</strong> — pagar no próximo mês</span>
+          <span class="toggle-label">Venda no <strong>fiado</strong> — pagar depois</span>
         </div>
 
-        <div class="field hidden" id="fiado-due-wrap">
-          <label>📅 Data de Vencimento</label>
-          <input type="date" id="s-due-date" />
+        <!-- Campos fiado -->
+        <div id="fiado-options-wrap" class="hidden">
+          <!-- Tipo: simples ou parcelado -->
+          <div class="row-2" style="margin-bottom:0">
+            <div class="toggle-row" id="toggle-simples" onclick="setFiadoTipo('simples')" style="border-color:var(--accent)">
+              <div style="font-size:18px">📅</div>
+              <div>
+                <div style="font-size:13px;font-weight:600;color:var(--text)">À prazo</div>
+                <div style="font-size:11px;color:var(--text-muted)">Paga tudo de uma vez</div>
+              </div>
+            </div>
+            <div class="toggle-row" id="toggle-parcelado" onclick="setFiadoTipo('parcelado')" style="cursor:pointer">
+              <div style="font-size:18px">📊</div>
+              <div>
+                <div style="font-size:13px;font-weight:600;color:var(--text)">Parcelado</div>
+                <div style="font-size:11px;color:var(--text-muted)">Divide em parcelas mensais</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Data de vencimento (simples) -->
+          <div class="field" id="fiado-due-wrap">
+            <label>📅 Data de Vencimento</label>
+            <input type="date" id="s-due-date" />
+          </div>
+
+          <!-- Parcelamento -->
+          <div id="parcelamento-wrap" class="hidden">
+            <label style="display:block;margin-bottom:6px">Número de Parcelas</label>
+            <div class="parcela-grid" id="parcela-opcoes"></div>
+            <div id="parcela-preview-wrap" class="hidden">
+              <div style="font-size:11px;color:var(--text-dim);margin:10px 0 6px;text-transform:uppercase;letter-spacing:0.08em">Cronograma de parcelas</div>
+              <div class="parcela-preview" id="parcela-preview-list"></div>
+            </div>
+          </div>
         </div>
 
         <div id="s-preview" class="preview-box hidden"></div>
@@ -416,7 +465,7 @@
     <div class="card">
       <div class="card-title">Fiados Pendentes</div>
       <div class="table-wrap"><table>
-        <thead><tr><th>Cliente</th><th>Produto</th><th>Gramas</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>Ações</th></tr></thead>
+        <thead><tr><th>Cliente</th><th>Produto</th><th>Gramas</th><th>Valor</th><th>Parcelas</th><th>Vencimento</th><th>Status</th><th>Ações</th></tr></thead>
         <tbody id="f-pending-list"></tbody>
       </table></div>
     </div>
@@ -520,6 +569,8 @@ function loadState() {
 let products = [], sales = [], fiados = [];
 let nextPId = 1, nextSId = 1, nextFId = 1;
 let isFiado = false;
+let fiadoTipo = 'simples'; // 'simples' | 'parcelado'
+let numParcelas = 2;
 
 const NFLOR_PROMO_GRAMS    = 250;
 const NFLOR_PROMO_DISCOUNT = 0.20; // 20%
@@ -794,11 +845,15 @@ function renderFiado() {
       const stBadge = st === 'atrasado'
         ? '<span class="fiado-status-atrasado">⏰ Atrasado</span>'
         : '<span class="fiado-status-pendente">📒 Pendente</span>';
+      const parcelaBadge = f.isParcelado
+        ? `<div style="margin-top:3px"><span class="installment-badge">📊 ${f.parcelaNum}ª/${f.totalParcelas}</span></div>`
+        : '';
       return `<tr>
         <td><strong>${f.buyer}</strong></td>
-        <td>${f.productName}</td>
+        <td>${f.productName}${parcelaBadge}</td>
         <td>${G(f.grams)}</td>
         <td><span class="badge badge-purple">${R(f.value)}</span></td>
+        <td>${f.isParcelado ? `<span style="font-size:11px;color:var(--gold)">${f.parcelaNum}ª de ${f.totalParcelas}</span>` : '—'}</td>
         <td style="font-size:12px;color:var(--text-muted)">${fmtDateOnly(f.dueDate)}</td>
         <td>${stBadge}</td>
         <td style="display:flex;gap:6px;flex-wrap:wrap">
@@ -882,16 +937,19 @@ function renderClientes() {
         ${hasPendFiado ? `
         <div class="client-section-title">📒 Fiados Pendentes</div>
         <div class="table-wrap"><table>
-          <thead><tr><th>Produto</th><th>Gramas</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>Ação</th></tr></thead>
+          <thead><tr><th>Produto</th><th>Parcela</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>Ação</th></tr></thead>
           <tbody>
             ${st.fiadosPend.map(f => {
               const ls = getFiadoStatus(f);
               const sb = ls==='atrasado'
                 ? '<span class="fiado-status-atrasado">⏰ Atrasado</span>'
                 : '<span class="fiado-status-pendente">📒 Pendente</span>';
+              const parcelaInfo = f.isParcelado
+                ? `<span class="installment-badge">📊 ${f.parcelaNum}ª/${f.totalParcelas}</span>`
+                : '<span style="font-size:11px;color:var(--text-dim)">À prazo</span>';
               return `<tr>
                 <td>${f.productName}</td>
-                <td>${G(f.grams)}</td>
+                <td>${parcelaInfo}</td>
                 <td><span class="badge badge-purple">${R(f.value)}</span></td>
                 <td style="font-size:12px;color:var(--text-muted)">${fmtDateOnly(f.dueDate)}</td>
                 <td>${sb}</td>
@@ -1086,14 +1144,40 @@ function addSale() {
   product.grams = parseFloat((product.grams - grams).toFixed(2));
 
   if (isFiado) {
-    fiados.push({
-      id: nextFId++, saleId: saleObj.id,
-      buyer, productName: product.name,
-      grams, value: revenue,
-      dueDate: dueDate || null,
-      status: 'pendente', createdAt: new Date().toISOString(),
-      paidAt: null
-    });
+    if (fiadoTipo === 'parcelado') {
+      // Cria uma entrada de fiado por parcela
+      const valParcela = parseFloat((revenue / numParcelas).toFixed(2));
+      for (let i = 0; i < numParcelas; i++) {
+        const d = new Date(); d.setMonth(d.getMonth() + i + 1);
+        const dueDateStr = d.toISOString().split('T')[0];
+        fiados.push({
+          id: nextFId++, saleId: saleObj.id,
+          buyer, productName: product.name,
+          grams: parseFloat((grams / numParcelas).toFixed(3)),
+          value: valParcela,
+          totalValue: revenue,
+          dueDate: dueDateStr,
+          status: 'pendente',
+          isParcelado: true,
+          parcelaNum: i + 1,
+          totalParcelas: numParcelas,
+          createdAt: new Date().toISOString(),
+          paidAt: null
+        });
+      }
+    } else {
+      const dueDate = document.getElementById('s-due-date').value;
+      fiados.push({
+        id: nextFId++, saleId: saleObj.id,
+        buyer, productName: product.name,
+        grams, value: revenue,
+        dueDate: dueDate || null,
+        status: 'pendente',
+        isParcelado: false,
+        createdAt: new Date().toISOString(),
+        paidAt: null
+      });
+    }
   }
 
   // Reset form
@@ -1104,19 +1188,19 @@ function addSale() {
   document.getElementById('s-preview').classList.add('hidden');
   document.getElementById('promo-banner').style.display = 'none';
   if (isFiado) {
-    isFiado = false;
+    isFiado = false; fiadoTipo = 'simples'; numParcelas = 2;
     document.getElementById('fiado-toggle').classList.remove('on');
-    document.getElementById('fiado-due-wrap').classList.add('hidden');
+    document.getElementById('fiado-options-wrap').classList.add('hidden');
+    document.getElementById('parcelamento-wrap').classList.add('hidden');
+    document.getElementById('parcela-preview-wrap').classList.add('hidden');
   }
 
+  const parceladoMsg = (isFiado && fiadoTipo==='parcelado') ? ` em ${numParcelas}×` : '';
   const promoMsg = promoHits ? ' 🎯 Desconto de 20% aplicado!' : '';
-  const successMsg = isFiado
-    ? `Fiado registrado para ${buyer}!${promoMsg}`
-    : `Venda registrada! Lucro: ${R(revenue-cost)}${promoMsg}`;
-  showAlert('s-alert','success', successMsg);
+  showAlert('s-alert','success', `Venda registrada! ${isFiado ? `Fiado para ${buyer}${parceladoMsg}.` : `Lucro: ${R(revenue-cost)}`}${promoMsg}`);
   showToast(promoHits
     ? `🎯 Promo N/FLOR! ${buyer !== '—' ? buyer + ' · ' : ''}${R(revenue)} (−20%)`
-    : (isFiado ? `📒 Fiado: ${buyer} deve ${R(revenue)}` : `✅ Venda: lucro ${R(revenue-cost)}`));
+    : (isFiado ? `📒 Fiado${parceladoMsg}: ${buyer} · ${R(revenue)}` : `✅ Venda: lucro ${R(revenue-cost)}`));
 
   saveState(); renderAll();
 }
@@ -1149,14 +1233,80 @@ function removeFiado(id) {
 function toggleFiado() {
   isFiado = !isFiado;
   document.getElementById('fiado-toggle').classList.toggle('on', isFiado);
-  document.getElementById('fiado-due-wrap').classList.toggle('hidden', !isFiado);
-  if (isFiado && !document.getElementById('s-due-date').value) {
-    const d = new Date(); d.setMonth(d.getMonth()+1);
-    document.getElementById('s-due-date').value = d.toISOString().split('T')[0];
+  document.getElementById('fiado-options-wrap').classList.toggle('hidden', !isFiado);
+  if (isFiado) { setFiadoTipo('simples'); }
+}
+
+function setFiadoTipo(tipo) {
+  fiadoTipo = tipo;
+  const sEl = document.getElementById('toggle-simples');
+  const pEl = document.getElementById('toggle-parcelado');
+  const dueWrap  = document.getElementById('fiado-due-wrap');
+  const parcWrap = document.getElementById('parcelamento-wrap');
+
+  if (tipo === 'simples') {
+    sEl.style.borderColor = 'var(--accent-light)';
+    sEl.style.background  = 'var(--accent-dim)';
+    pEl.style.borderColor = 'var(--border)';
+    pEl.style.background  = 'var(--surface)';
+    dueWrap.classList.remove('hidden');
+    parcWrap.classList.add('hidden');
+    if (!document.getElementById('s-due-date').value) {
+      const d = new Date(); d.setMonth(d.getMonth()+1);
+      document.getElementById('s-due-date').value = d.toISOString().split('T')[0];
+    }
+  } else {
+    pEl.style.borderColor = 'var(--accent-light)';
+    pEl.style.background  = 'var(--accent-dim)';
+    sEl.style.borderColor = 'var(--border)';
+    sEl.style.background  = 'var(--surface)';
+    dueWrap.classList.add('hidden');
+    parcWrap.classList.remove('hidden');
+    buildParcelaOptions();
   }
 }
 
-function updateFiadoField() { /* buyer input updates on its own */ }
+function buildParcelaOptions() {
+  const productId = parseInt(document.getElementById('s-product').value);
+  const grams     = parseFloat(document.getElementById('s-qty').value);
+  const product   = products.find(p=>p.id===productId);
+  const total     = (product && grams > 0) ? grams * (calcPromo(product,grams).effectiveSalePerG) : 0;
+
+  const options = [2, 3, 4, 6];
+  document.getElementById('parcela-opcoes').innerHTML = options.map(n => {
+    const val = total > 0 ? R(total/n) : '—';
+    return `<div class="parcela-option${numParcelas===n?' selected':''}" onclick="selectParcela(${n})">
+      <div class="parcela-num">${n}×</div>
+      <div class="parcela-val">${val}/mês</div>
+    </div>`;
+  }).join('');
+
+  if (total > 0) buildParcelaPreview(total);
+  else document.getElementById('parcela-preview-wrap').classList.add('hidden');
+}
+
+function selectParcela(n) {
+  numParcelas = n;
+  buildParcelaOptions();
+}
+
+function buildParcelaPreview(total) {
+  const valParcela = total / numParcelas;
+  const wrap = document.getElementById('parcela-preview-wrap');
+  const list = document.getElementById('parcela-preview-list');
+  wrap.classList.remove('hidden');
+  const today = new Date();
+  list.innerHTML = Array.from({length: numParcelas}, (_,i) => {
+    const d = new Date(today); d.setMonth(d.getMonth() + i + 1);
+    const dateStr = d.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit', year:'numeric'});
+    return `<div class="parcela-row">
+      <span><span class="parcela-num-badge">${i+1}ª</span>${dateStr}</span>
+      <span style="color:var(--accent-light);font-weight:600">${R(valParcela)}</span>
+    </div>`;
+  }).join('');
+}
+
+function updateFiadoField() { if (isFiado && fiadoTipo==='parcelado') buildParcelaOptions(); }
 
 // ══════════════════════════════════════════════════════
 //  PREVIEWS
@@ -1200,6 +1350,7 @@ function updateSPreview() {
       <div class="prow"><span>Receita da venda</span><span style="color:var(--accent-light)">${R(revenue)}</span></div>
       <div class="prow total"><span>Lucro desta venda</span><span style="color:var(--green)">${R(profit)}</span></div>`;
     el.classList.remove('hidden');
+    if (isFiado && fiadoTipo === 'parcelado') buildParcelaOptions();
   } else { el.classList.add('hidden'); }
 }
 
